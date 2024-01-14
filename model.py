@@ -1,22 +1,38 @@
 
-
-from numpy import loadtxt
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-# load the dataset
-dataset = loadtxt('mydata.csv', delimiter=',')
+import numpy as np
+
+#Do data preprocessing:
+#import and automatically run script
+import DataPreprocessing as DP
+
 # split into input (X) and output (y) variables
-X = dataset[:,0:8]
-y = dataset[:,8]
+labels = DP.dataset[:,0]
+features = DP.dataset[:,1:]
+nlabels = len(set(labels))
+nfeatures = np.shape(features)[1]
+print("nlabels:",nlabels, "nfeatures",nfeatures)
+#reshape 1D labels  for input
+labels = np.array([labels])
+labels = labels.T
+
+
+#print(labels)
+#print(features)
 # define the keras model
 model = Sequential()
-model.add(Dense(12, input_shape=(8,), activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Dense(20, input_shape=(nfeatures,), activation='relu'))
+model.add(Dense(20, activation='relu'))
+model.add(Dense(3, activation='relu'))
+model.add(Dense(nlabels-1, activation='softmax'))
+#model.add(Dense(1, activation='sigmoid'))
+
 # compile the keras model
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 # fit the keras model on the dataset
-model.fit(X, y, epochs=150, batch_size=10)
+model.fit(features, labels, epochs=10, batch_size=5, validation_split=0.15, verbose=1, shuffle=True)
 # evaluate the keras model
-_, accuracy = model.evaluate(X, y)
+_, accuracy = model.evaluate(features, labels)
 print('Accuracy: %.2f' % (accuracy*100))
+

@@ -42,6 +42,7 @@ TTreeInterface::TTreeInterface(std::vector<std::string> fileList, std::string tr
 	for( int i=0; i<_filelist.size(); i++){
 		_tchain->AddFile(_filelist[i].c_str());
 	}
+	_ttree = _tchain;
 }
 void TTreeInterface::CreateFlattenedCSV( std::vector<std::string> branchList, std::string csvname ){
 	// loop over selected branches

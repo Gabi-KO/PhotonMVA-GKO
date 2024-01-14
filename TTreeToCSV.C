@@ -11,21 +11,20 @@ int main(){
 	
 	///loading a single file///
 	TTreeInterface TI(fname,tname);
-	TI._ttree->Print();
-	//TI._ttree->Draw("Met_pt");
+	//TI._ttree->Print();
+	
 	
 	///example code to load tchain///
-	/*
-	std::vector<std::string> fileList{};
-	fileList = ReadList(flistname);
-	TTreeInterface TI2(fileList, tname);
-	TI2._tchain->Print();
-	TI2._tchain->Scan("ECALRecHit_energy");
-	*/
+	//std::vector<std::string> fileList{};
+	//fileList = ReadList(flistname);
+	//TTreeInterface TI2(fileList, tname);
+	//TI2._tchain->Print();
 	
-	std::vector<std::string> branchList{"Photon_pt", "Photon_pz"};
+
+	std::vector<std::string> branchList{"Photon_genLlpId", "Photon_pt", "Photon_pz", "Photon_eta", "Photon_salp", "Photon_smaj", "Photon_smin", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04"  };
 	std::string csvname = "InputCSV/test.csv";
 	TI.CreateFlattenedCSV( branchList,csvname );
-	
+	//TI2.CreateFlattenedCSV( branchList, "InputCSV/test2.csv");
+
 	return(0);
 }
