@@ -1,13 +1,5 @@
----
-tags: [LLP]
-title: LLP - Photon MVA
-created: '2024-01-15T23:03:10.692Z'
-modified: '2024-01-16T00:04:48.850Z'
----
 
 # LLP - Photon MVA 
-
-
 
 ## Workflow
 ```mermaid
