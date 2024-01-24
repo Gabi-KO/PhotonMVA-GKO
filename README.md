@@ -41,10 +41,12 @@ graph LR
 #### Setting up the environment
 1) Need ROOT, Anaconda, and newer python ~3.8
 2) Make a conda environment to hold Tensorflow, install tensorflow and other tools
-  `conda create -n tflow tensorflow`
-  `conda activate tf`
-  `conda install keras`
-  `conda install conda-forge::scikit-learn`
+
+`conda create -n tflow tensorflow`
+`conda activate tflow`
+`conda install keras`
+`conda install conda-forge::scikit-learn`
+
 3) sklearn is used for matrix normalization and keras is the tensorflow API/interface, you may also need numpy `conda install numpy`
 
 
