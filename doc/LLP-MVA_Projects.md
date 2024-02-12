@@ -59,7 +59,8 @@ All three parts of this exercise can and should be iterated on: selection of fea
 
 To create a competitive model we first need establish a benchmark by reproducing current results and then later try to improve on those results. The first model we should build should involve the following pre-processing/pre-selection cuts
 
-![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/Photon_Preselection.png?raw=true)
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/Photon_Preselection.png?raw=true)
+
 
 The branches from the input ROOT file that correspond to the preselection criteria are:
 ```
@@ -146,7 +147,7 @@ After all of the preselection is completed, drop the pT column and create the ev
 
 The base architecture and training methods should also be reproduced:
 
-![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/DNN_architecture.png?raw=true)
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/DNN_architecture.png?raw=true)
 
 Since our current implementation is a small statsitical subset which doesn't include the full MC background we don't dont need to train as long
 
