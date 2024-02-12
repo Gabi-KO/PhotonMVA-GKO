@@ -151,13 +151,14 @@ The base architecture and training methods should also be reproduced:
 
 Since our current implementation is a small statsitical subset which doesn't include the full MC background we don't dont need to train as long
 
-	- For testing used a small number of epochs (~10)
+	- For testing use a small number of epochs (~10)
+	- For testing use a batch size that makes the training fast
 	- Implement with up to 100 epochs and a batch size up to 1000
 	- Experiment with nodes per layer e.g. 10,20,40
 	- Experiment with number of layers e.g. 3,5,10
 	
 
-** How does your model perform? What differences can you find by varying architecture/epochs/batch size? **
+**How does your model perform? What differences can you find by varying architecture/epochs/batch size?**
 
 
 
