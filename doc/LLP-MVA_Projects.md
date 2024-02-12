@@ -51,3 +51,113 @@ Currently the model is trained on the full sample, which isn't normal practice -
 ***
 
 
+## Exercise 2 - Model Building
+
+All three parts of this exercise can and should be iterated on: selection of features, optimization of the network architecture, and validation of the model accuracy by assessing the systematic spread in classification via sampling of training data
+
+#### Part 1) Feature Selection
+
+To create a competitive model we first need establish a benchmark by reproducing current results and then later try to improve on those results. The first model we should build should involve the following pre-processing/pre-selection cuts
+
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/Photon_Preselection.png?raw=true)
+
+The branches from the input ROOT file that correspond to the preselection criteria are:
+```
+H/E : Photon_hadTowOverEM
+R9 : Photon_r9
+sigma_ieie : Photon_SigmaIEtaIEta
+ECAL iso: Photon_ecalRHSumEtConeDR04
+HCAL iso: Photon_hcalTowerSumEtConeDR04
+Tracker iso: Photon_trkSumPtSolidConeDR04
+```
+
+There are also 4 additional parameters that should be kept in the csv file, including the labels
+```
+Photon_smaj 
+Photon_smin
+Photon_pt
+Photon_genLlpId
+```
+
+**Modify `TTreeToCSV.C` to use only these branches**
+
+The pT branch will be used to compute the pt dependent cuts on isolations and then should be dropped before training
+
+The default pT cut is 10 GeV which should be increased to match the 70//40 GeV leading/subleading requirments. 
+
+To match the leading/subleading photon selection we need to restrict each event to 1 or 2 photons. This can be done by dropping the third (or more) photons which have the same event ID.
+
+The pseudocode would be something like the following:
+We can do a slower more intuitive loop, or optimize with slicing/masking later
+
+
+
+First, the selection of photons based on multiplicity
+```
+def GetLeadingSubLeading(inputDataFrame):
+	
+	newDataFrame = a new empty frame to load with photons that pass cuts
+	
+	for each photon in inputDataFrame:	
+		
+		check the event ID 
+			if the event ID is new, save the new ID, start a counter
+			
+			if the event ID is the same as the last one, increment a counter
+			
+			if the counter ==1 and pT > 70 save the photon
+			
+			if the counter ==2 and pT > 40 save the photon
+			
+			if the counter > 2 do not save the photon				 
+	
+	return newDataFrame
+```
+
+For applying preselection cuts use the 2017 criteria. 
+```
+def ApplyPreselection(inputDataFrame):
+
+	newDataFrame = a new empty frame to load with photons that pass cuts
+	
+	for each photon in inputDataFrame:
+	
+		compute the pt based isolation requirements
+		check each criteria from preselection
+		if the photon passes all criteria save the photon on newDataFrame
+
+	return newDataFrame
+```
+	 
+
+If you want to try slicing, the sytnax would be something like this:
+
+```
+listOfPhotonPt #the pt column of full matrix
+inputDataFrame # the numpy full matrix
+inputDataFrame = inputDataFrame[ listOfPhotonPt >= 40 ]
+```
+
+After all of the preselection is completed, drop the pT column and create the evenly sampled testing/training split for input into the DNN (same as Exercise 1)
+
+
+
+#### Part 2) Network Architecture
+
+The base architecture and training methods should also be reproduced:
+
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/DNN_architecture.png?raw=true)
+
+Since our current implementation is a small statsitical subset which doesn't include the full MC background we don't dont need to train as long
+
+	- For testing used a small number of epochs (~10)
+	- Implement with up to 100 epochs and a batch size up to 1000
+	- Experiment with nodes per layer e.g. 10,20,40
+	- Experiment with number of layers e.g. 3,5,10
+	
+
+** How does your model perform? What differences can you find by varying architecture/epochs/batch size? **
+
+
+
+
