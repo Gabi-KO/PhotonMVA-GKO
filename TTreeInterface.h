@@ -148,7 +148,7 @@ void TTreeInterface::CreateFlattenedCSV( std::vector<std::string> branchList, st
 		  std::string key =  iter->first;
 		  std::cout<<"found mapping: "<<key<<" "<<_idxMaps[key].first<<":"<<_idxMaps[key].second<<"\n"; 
 		  //print headers
-		  ocsv<< " "<<key<<" ";
+		  ocsv<<key<<" ";
 		}
 
 		
