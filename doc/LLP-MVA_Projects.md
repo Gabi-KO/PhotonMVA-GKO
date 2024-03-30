@@ -2,6 +2,33 @@
 
 # LLP - MVA Projects
 
+## Exercise Summary
+### Exercise 1 - Label sampling/Training and testing split
+- From a CSV with uneven amounts of labels, created a dataframe with an even amount of each label
+- Create a testing and training split from the evenly sampled dataframe -> train the model with the training set and test the model with the testing split
+**Deliverables**
+- Show that your dataframe has even amounts of each label
+- Show the accuracy of your model with the training set
+- Show the accuracy of your model on the testing set (trained by the training set)
+
+### Exercise 2 - Model Building/Benchmark
+- Create a csv file with the appropriate features
+- Perform preselection on csv, then sample the labels evenly
+- Experiment with model architecture and training hyperparameters
+**Deliverables**
+- Show the efficiency of preselection per label
+- Show that you have an even amount of labels after preselection
+- Plot model accuracies for different model architectures and hyperparameters
+
+### Exercise 3 - Physics Analysis/Systematics
+- Study the input features in 1D
+- Look for correlations between features
+**Deliverables**
+- 1D and 2D histograms of physics variables
+- Report a systematic uncertainty on the classification accuracy using k-fold cross-validation
+
+---
+
 ## Exercise 1 - Label sampling/Training and testing split
 
 Data preprocessing and balancing the amount of data for each label is a very important step training a NN model. If the distribution of each label are uneven, the model will learn about the statistical imbalance and would over-emphasize learned features from the over represented label in the dataset. To correct for this, we will randomly sample even amounts of each label
@@ -139,7 +166,9 @@ inputDataFrame # the numpy full matrix
 inputDataFrame = inputDataFrame[ listOfPhotonPt >= 40 ]
 ```
 
+**How many photons for each label survive the preselection?**
 After all of the preselection is completed, drop the pT column and create the evenly sampled testing/training split for input into the DNN (same as Exercise 1)
+**Make sure the number of photons per label are nearly equal after selection!!!**
 
 
 
@@ -149,7 +178,7 @@ The base architecture and training methods should also be reproduced:
 
 ![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/DNN_architecture.png?raw=true)
 
-Since our current implementation is a small statsitical subset which doesn't include the full MC background we don't dont need to train as long
+Since our current implementation is a small statistical subset which doesn't include the full MC background we don't dont need to train as long
 
 	- For testing use a small number of epochs (~10)
 	- For testing use a batch size that makes the training fast
@@ -159,6 +188,39 @@ Since our current implementation is a small statsitical subset which doesn't inc
 	
 
 **How does your model perform? What differences can you find by varying architecture/epochs/batch size?**
+
+## Exercise 3 - Physics Analysis 
+
+#### Part 1) Understanding Model Discrimination
+The neural network is a black box which we train to discriminate objects based on trained features. The advantage of using a neural network approach is that it can exploit subtle differences in a non-linear way. It essentially teases out correlations between features and exploits them in a high-dimensional space, which can be a more accurate/efficient way to perform discrimination than flat cuts. However, we need to understand where the model is getting is discrimination power by studying the input features. If we have a good idea of whats going on in the black box, we can improve the performance by adding/removing features or get insight on new feautures we could potentially create.
+
+The first step to understanding your features discrimination power is plotting 1D distributions for each label. Use the provided example python macro that processes your input CSV file
+
+Here is the example 1D output, the normalized distributions of the features salp and smin
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/salp.png?raw=true)
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/smin.png?raw=true)
+
+Here is the example 2D output, the 2D distributions of salp vs smin (sig and background separately)
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/2d_sig_salp_smin.png?raw=true)
+![alt text](https://github.com/Jphsx/PhotonMVA/blob/master/doc/2d_bkg_salp_smin.png?raw=true)
+
+**Note no cuts or selection has been applied to these distributions, we should apply preselection before studying the distribution shapes**
+**Expand on the macro by plotting and studying the other features**
+**Does salp look like a strongly discriminating variable? Is it correlated with smin?**
+
+#### Part 2) Model Validation and Systematics 
+Consider a model you've trained on a dataset, the model is then applied to a classification task in a physics search or experiment. What if the you trained a new model on a similar dataset, would the accuracy of your model be similar - which model would be the correct model to choose? To deal with the uncertainty in the machine learning model we need to develop and understand the systematic uncertainty on the classification. To do this we'll use k-fold cross validation.
+
+The idea of k-fold cross validation
+- Split the dataset into k-pieces or k-folds
+- Select k-1 folds and train the model, train on the remaining fold
+- Repeat k times with all k-1 unique combinations (until each fold has been tested on)
+- The spread in accuracy is the systematic error on your classification model
+
+**How does the number of folds affect the systematic uncertainty?**
+**For a given order of statistics (number of photons put in) how does the systematic scale - 1%, 5%, 10%?**
+**Suppose k=10, which model to you choose in the analysis?**
+
 
 
 
