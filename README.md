@@ -16,6 +16,10 @@ graph LR
     - Loops over the `TTree*` and flattens each event into individual photons
     - Writes each photon to an output CSV file, records a relative event number for posterity
 
+- **Note on Ntuple version**
+	- v13 is flat, labels and certain values can be directly accessed
+	- for v14+ ntuples are not flat, labels and other values need are index mapped to other collections. This mapping is automatic if the proper labels are provided in the MapIdx() function
+
 ### Data Preprocessing
 - `DataPreprocessing.py`
   - python script to analyze csv and prepare input for MVA model
