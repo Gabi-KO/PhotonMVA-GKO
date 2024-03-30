@@ -5,11 +5,14 @@
 #include <fstream>
 #include <map>
 #include <utility>
-
+#include <set>
 
 #include "TTree.h"
 #include "TFile.h"
 #include "TChain.h"
+
+typedef std::map<std::string, std::pair<std::string, std::string> > strIdxMap ;
+typedef std::map<std::string, std::pair<std::vector<float>*,std::vector<float>*>> vecIdxMap;
 
 class TTreeInterface{
 	public:
@@ -21,10 +24,11 @@ class TTreeInterface{
 	std::string _filename{};
 	std::string _treename{};
 	bool _isVersion_geq14 = false;
+	std::set<std::string> _idxSet{};
 	
 	//index chasing var
-	std::map<std::string, std::pair<std::string, std::string> >  _idxMaps{};//stores name associations, keep names around for debug and printing
-	std::map<std::string, std::pair<std::vector<float>*,std::vector<float>*>> _branchMaps{}; //auto load datastructures with same key mapping
+	strIdxMap _idxMaps{};//stores name associations, keep names around for debug and printing
+	vecIdxMap _branchMaps{}; //auto load datastructures with same key mapping
 	
 	
 	
@@ -36,6 +40,8 @@ class TTreeInterface{
 	//input idx branchname associated to idx of parent array, output label is csv header for this mapping
 	void MapIdx( std::string idxBranchName, std::string targetBranch, std::string outLabel );
 	float RetrieveMapValue( std::string mapkey, int dim_idx);
+	bool CheckUniqueMap( std::string idxBranchName);
+	std::vector<float>* GetBranchAlreadyAssigned( std::string idxBranchName );
 	
 	//make a flattened csv
 	void CreateFlattenedCSV( std::vector<std::string> branchList, std::string csvname);
@@ -63,6 +69,30 @@ TTreeInterface::TTreeInterface(std::vector<std::string> fileList, std::string tr
 	std::cout<<"Processing newer ntuple = "<< isNewVersion <<"\n";
 	_isVersion_geq14 = isNewVersion;
 }
+bool TTreeInterface::CheckUniqueMap( std::string idxBranchName){
+	//can only register the idx array to 1 object, so we need point to the original if it exists already
+	bool branchExists=false;
+		for (auto& idxstr : _idxSet) {
+     
+		  if( idxstr == idxBranchName ){
+		  	branchExists = true;
+		  }	   
+		}
+	std::cout<<"Checking if branch "<< idxBranchName <<" address is already assigned: branchExists="<<branchExists<<"\n";
+	return branchExists;
+	
+}
+std::vector<float>* TTreeInterface::GetBranchAlreadyAssigned( std::string idxBranchName ){
+	for(strIdxMap::iterator iter = _idxMaps.begin(); iter != _idxMaps.end(); ++iter)
+		{
+			std::string key = iter->first;
+		  if( _idxMaps[ key].first == idxBranchName ){
+		  	return _branchMaps[key].first;
+		  }
+		}
+	return 0;
+
+}
 void TTreeInterface::MapIdx( std::string idxBranchName, std::string targetBranch, std::string outLabel ){
 	_idxMaps[ outLabel ] = std::make_pair( idxBranchName, targetBranch );
 	std::vector<float>* v1 =0;
@@ -70,14 +100,24 @@ void TTreeInterface::MapIdx( std::string idxBranchName, std::string targetBranch
 	_branchMaps[ outLabel ] = std::make_pair( v1, v2 );//init pointers to 0
 	
 	std::cout<<"setting idx chase branch address of: "<< outLabel <<"\n";
-	_ttree->SetBranchAddress(idxBranchName.c_str(),&(_branchMaps[outLabel].first) );
+	if( !CheckUniqueMap( idxBranchName ) ){
+		_ttree->SetBranchAddress(idxBranchName.c_str(),&(_branchMaps[outLabel].first) );
+	}else{
+		_branchMaps[ outLabel ].first = GetBranchAlreadyAssigned( idxBranchName );
+	}
     _ttree->SetBranchAddress(targetBranch.c_str(), &(_branchMaps[outLabel].second) );
+    
+    _idxSet.insert( idxBranchName );
 }
 float TTreeInterface::RetrieveMapValue(std::string mapkey, int dim_idx){
 	
 	float val{};
 	float idx{};
-	if( (_branchMaps[mapkey].first)->at(dim_idx) ==  -1 ){
+	if( (_branchMaps[mapkey].first)->size()==0 || (_branchMaps[mapkey].second)->size()==0){
+		return -999;
+	}
+	
+	if( (_branchMaps[mapkey].first)->at(dim_idx) < 0 ){
 		return -1;
 	}
 	else{
@@ -99,16 +139,19 @@ void TTreeInterface::CreateFlattenedCSV( std::vector<std::string> branchList, st
   //myfile.close();
 	
 	//do gen idx chasing in new version of ntuple
-	std::vector< std::vector<float>* > genBranches(2,0);//this has 2 branches always and will init to 0s
 	if(_isVersion_geq14){//if we have a newer version load the necessary gen information
-		std::string gammaidx = "Photon_genIdx"; //this is not actually an id this in an index on gen array
-		std::string llpid = "Gen_susId"; //this is the custom susy id
-		std::cout<<"setting branch address of: "<< gammaidx << " and "<< llpid <<"\n";
-		_ttree->SetBranchAddress(gammaidx.c_str(), &genBranches[0]);
-		_ttree->SetBranchAddress(llpid.c_str(), &genBranches[1]);
+
 		
-		//write the gen llp header
-		ocsv << " Photon_genLlpId ";
+		//idx mapping abstraction
+		for(strIdxMap::iterator iter = _idxMaps.begin(); iter != _idxMaps.end(); ++iter)
+		{
+		  std::string key =  iter->first;
+		  std::cout<<"found mapping: "<<key<<" "<<_idxMaps[key].first<<":"<<_idxMaps[key].second<<"\n"; 
+		  //print headers
+		  ocsv<< " "<<key<<" ";
+		}
+
+		
 	}//end new version check
 
 	
@@ -139,12 +182,11 @@ void TTreeInterface::CreateFlattenedCSV( std::vector<std::string> branchList, st
 		//unroll the vector
 		for(int j=0; j<dim; j++){
 			ocsv<<i<<" ";
-			//if we have a newer version cross reference genID from gen collection - save as genllpid
+			//if newever versions extract the values from the idx mapping
 			if(_isVersion_geq14){
-				if(genBranches[0]->at(j) > 0){
-				 ocsv<< genBranches[1]->at(genBranches[0]->at(j))<< " ";
-				}else{
-				 ocsv<< "-1 ";
+				for(strIdxMap::iterator iter = _idxMaps.begin(); iter != _idxMaps.end(); ++iter)
+				{
+					ocsv<< RetrieveMapValue( iter->first, j) << " ";
 				}
 			}
 			

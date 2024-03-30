@@ -33,8 +33,13 @@ int main(){
 	//this branch list assumes a newever version, it will automatically generate the labels, do not include the brance (it doesn't exist)
 	//std::vector<std::string> branchList{ "Photon_pt", "Photon_pz", "Photon_eta", "Photon_salp", "Photon_smaj", "Photon_smin", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04"  };
 	std::vector<std::string> branchList{ "Photon_pt", "Photon_pz", "Photon_eta", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04"  };
+	//abstracted idx chasing, provide mapping (idxbranch:targetbranch, output header name)
+	TI.MapIdx("Photon_genIdx" , "Gen_susId", "Photon_genLlpId" );
+	TI.MapIdx("Photon_scIndex" , "SuperCluster_salp", "Photon_salp" );
+	TI.MapIdx("Photon_scIndex" , "SuperCluster_smaj", "Photon_smaj" );
+	TI.MapIdx("Photon_scIndex" , "SuperCluster_smin", "Photon_smin" );
 	
-	std::string csvname = "InputCSV/test1_new_v14.csv";
+	std::string csvname = "InputCSV/test_FullabstractionMap_new_v14.csv";
 	TI.CreateFlattenedCSV( branchList,csvname );
 	//TI2.CreateFlattenedCSV( branchList, "InputCSV/test2.csv");
 
