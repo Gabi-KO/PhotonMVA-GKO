@@ -74,6 +74,71 @@ features = np.array(features)
 dataset = np.hstack((relabels.T,features))
 #print(dataset)
 print("Shape=", np.shape(dataset))
+#print(dataset)
 
 #enough pre-processing now, could improve with even sampling and shuffling, maybe even limit photon contribution per event
 
+def labelSamplingFunction(inputDataFrame, inputLabelSet):
+  #print(inputDataFrame)
+  photontuple = np.shape(inputDataFrame) #(1) Determine the total number photons
+  #print(photontuple)
+  #labelarray = inputDataFrame[:,0]
+  #labelarray = inputLabelSet
+  #print('label array:', labelarray)
+  #labelarrayset = set(labelarray)
+  relabelset = [ 0 if x == 22 else 1 for x in labels ] #binary time
+  relabelset = np.array(relabelset)
+  #print('relabelset:', relabelset)
+  relabelset = [element for element in relabelset if 1 != element] #remove 1s, this is all zero
+  #print('relabelset:', relabelset)
+  N = len(relabelset) #(2) Determine the number (N) of photons per label
+  #print('Number of Photons per Label:', N)
+    #- The number of photons per label should be the label with the least photons
+  #print('inputDataFrame:', inputDataFrame)
+  signalcount = 0
+  for row in inputDataFrame:
+    
+    if row[0] == 0:
+      signalcount += 1
+
+  np.random.shuffle(inputDataFrame) #(4) Shuffle the inputDataFrame for easy random sampling of photons
+  newDataFrame = [] #(5) Create a empty newDataFrame to hold sampled photons 
+
+  #print('inputDataFrame:', inputDataFrame)
+  #print('newDataFrame:', newDataFrame)
+
+  backgroundcount = 0
+  
+  for p in inputDataFrame:
+    #print(p[0])
+    if p[0] == 0:
+      newDataFrame.append(p)
+    else:
+      if backgroundcount < signalcount:
+        newDataFrame.append(p)
+        backgroundcount += 1
+    #Select N photons from each label
+    #Add photons to a newDataFrame
+
+  #print(Nphotons)
+  print('LABEL SAMPLING STUFF')
+  print('Signal Count:', signalcount)
+  print('Background Count:', backgroundcount)
+  print('N:', N)
+  print('photontuple shape:', photontuple)
+  print('label set shape:', np.shape(relabelset))
+  print('inputDataFrame shape:', np.shape(inputDataFrame))
+  print('newDataFrame shape:', np.shape(newDataFrame))
+
+  #print(newDataFrame)
+  
+  
+  
+  return newDataFrame
+
+
+#test = labelSamplingFunction(dataset)
+
+#print(test)
+
+#print(photondataset)

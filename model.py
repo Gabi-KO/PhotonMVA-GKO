@@ -17,6 +17,18 @@ print("nlabels:",nlabels, "nfeatures",nfeatures)
 labels = np.array([labels])
 labels = labels.T
 
+print('LABEL SAMPLING STUFF')
+print('N:', nlabels)
+print('photontuple:', nfeatures)
+#print('label set shape:', np.shape(relabelset))
+#print('inputDataFrame shape:', np.shape(inputDataFrame))
+#print('inputDataFrame:', inputDataFrame)
+
+
+#print('LABELTEST', labels)
+#print('DATA SET TEST', DP.dataset)
+newdataframe = DP.labelSamplingFunction(DP.dataset, labels)
+#newdataframe = DP.labelSamplingFunction(features, labels)
 
 #print(labels)
 #print(features)
@@ -36,3 +48,4 @@ model.fit(features, labels, epochs=10, batch_size=5, validation_split=0.15, verb
 _, accuracy = model.evaluate(features, labels)
 print('Accuracy: %.2f' % (accuracy*100))
 
+#print('New Data Frame:', newdataframe)
