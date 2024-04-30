@@ -4,8 +4,9 @@ from sklearn.preprocessing import normalize
 np.set_printoptions(threshold=sys.maxsize)
 np.set_printoptions(suppress=True, linewidth=100000)
 
-csvFile = './InputCSV/test.csv'
-
+#csvFile = './InputCSV/test.csv'
+#csvFile = './InputCSV/test_FullabstractionMap_new_v14.csv'
+csvFile = './InputCSV/full_sb_v19.csv'
 
 base_dataset = np.genfromtxt(csvFile, dtype=float, delimiter=' ', names=True, skip_header=0, missing_values={'nan':np.NaN})
 print("Loaded csv into special tuple, shape=",np.shape(base_dataset))
@@ -31,7 +32,7 @@ print("Shape=",np.shape(dataset))
 
 
 print("Veto photons with pt < 10 GeV")
-dataset = dataset[dataset[:, 2] > 10., :]
+dataset = dataset[dataset[:, 5] > 10., :] #pt is now 5th row not second
 #print(dataset)
 print("Shape=",np.shape(dataset))
 
