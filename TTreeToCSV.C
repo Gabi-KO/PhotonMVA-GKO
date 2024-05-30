@@ -7,8 +7,9 @@ int main(){
 
 	//small test file
 	//std::string fname = "InputFile/GMSB_AOD_v13_GMSB_L-350TeV_Ctau-200cm_AODSIM_RunIIFall17DRPremix_output99.root";
-	std::string fname = "InputFile/kucmsntuple_GMSB_AOD_v14_GMSB_L-200TeV_Ctau-200cm_AODSIM_RunIIFall17DRPremix.root";
-	
+	//std::string fname = "InputFile/kucmsntuple_GMSB_AOD_v14_GMSB_L-200TeV_Ctau-200cm_AODSIM_RunIIFall17DRPremix.root";
+	std::string fname = "InputFile/llpana_mva_gmsbl100l150ct0p1_gjets_qcd.root";
+
 	//bigger file with newer ntuple version
 	
 	std::string tname = "tree/llpgtree";
@@ -35,11 +36,13 @@ int main(){
 	std::vector<std::string> branchList{ "Photon_pt", "Photon_pz", "Photon_eta", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04", "Photon_hadTowOverEM", "Photon_ecalRHSumEtConeDR04", "Photon_hcalTowerSumEtConeDR04", "Photon_trkSumPtSolidConeDR04", "Photon_SigmaIEtaIEta", "Photon_r9"  };
 	//abstracted idx chasing, provide mapping (idxbranch:targetbranch, output header name)
 	TI.MapIdx("Photon_genIdx" , "Gen_susId", "Photon_genLlpId" );
+	//TI.MapIdx("Photon_genIdx" , "Gen_susEvtType", "Photon_evtType");
 	TI.MapIdx("Photon_scIndex" , "SuperCluster_salp", "Photon_salp" );
 	TI.MapIdx("Photon_scIndex" , "SuperCluster_smaj", "Photon_smaj" );
 	TI.MapIdx("Photon_scIndex" , "SuperCluster_smin", "Photon_smin" );
 	
-	std::string csvname = "InputCSV/test_FullabstractionMap_new_v14.csv";
+	//std::string csvname = "InputCSV/test_FullabstractionMap_new_v14.csv";
+	std::string csvname = "InputCSV/full_sb_v19.csv";
 	TI.CreateFlattenedCSV( branchList,csvname );
 	//TI2.CreateFlattenedCSV( branchList, "InputCSV/test2.csv");
 
