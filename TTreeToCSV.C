@@ -32,7 +32,7 @@ int main(){
 	
 	//this branch list assumes a newever version, it will automatically generate the labels, do not include the brance (it doesn't exist)
 	//std::vector<std::string> branchList{ "Photon_pt", "Photon_pz", "Photon_eta", "Photon_salp", "Photon_smaj", "Photon_smin", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04"  };
-	std::vector<std::string> branchList{ "Photon_pt", "Photon_pz", "Photon_eta", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04"  };
+	std::vector<std::string> branchList{ "Photon_pt", "Photon_pz", "Photon_eta", "Photon_trkSumPtSolidConeDR04", "Photon_trkSumPtHollowConeDR04", "Photon_hadTowOverEM", "Photon_ecalRHSumEtConeDR04", "Photon_hcalTowerSumEtConeDR04", "Photon_trkSumPtSolidConeDR04", "Photon_SigmaIEtaIEta", "Photon_r9"  };
 	//abstracted idx chasing, provide mapping (idxbranch:targetbranch, output header name)
 	TI.MapIdx("Photon_genIdx" , "Gen_susId", "Photon_genLlpId" );
 	TI.MapIdx("Photon_scIndex" , "SuperCluster_salp", "Photon_salp" );

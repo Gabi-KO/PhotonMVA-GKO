@@ -17,6 +17,12 @@ print("nlabels:",nlabels, "nfeatures",nfeatures)
 labels = np.array([labels])
 labels = labels.T
 
+
+#call get leading sub leading function before label sampling
+#run the data frame this outputs into label sampling
+
+
+
 print('LABEL SAMPLING STUFF')
 print('N:', nlabels)
 print('photontuple:', nfeatures)
@@ -28,7 +34,6 @@ print('photontuple:', nfeatures)
 #print('LABELTEST', labels)
 #print('DATA SET TEST', DP.dataset)
 newdataframe = DP.labelSamplingFunction(DP.dataset, labels)
-#newdataframe = DP.labelSamplingFunction(features, labels)
 
 #print(labels)
 #print(features)

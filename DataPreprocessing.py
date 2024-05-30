@@ -4,7 +4,7 @@ from sklearn.preprocessing import normalize
 np.set_printoptions(threshold=sys.maxsize)
 np.set_printoptions(suppress=True, linewidth=100000)
 
-csvFile = './InputCSV/test.csv'
+csvFile = './InputCSV/test_FullabstractionMap_new_v14.csv'
 
 
 base_dataset = np.genfromtxt(csvFile, dtype=float, delimiter=' ', names=True, skip_header=0, missing_values={'nan':np.NaN})
@@ -30,10 +30,10 @@ dataset = dataset[~np.isnan(dataset).any(axis=1), :]
 print("Shape=",np.shape(dataset))
 
 
-print("Veto photons with pt < 10 GeV")
-dataset = dataset[dataset[:, 2] > 10., :]
+#print("Veto photons with pt < 10 GeV")
+#dataset = dataset[dataset[:, 2] > 10., :] #this moved columns, need to update this part
 #print(dataset)
-print("Shape=",np.shape(dataset))
+#print("Shape=",np.shape(dataset))
 
 print("Removing evitd, splitting labels and feature matrix")
 labels = dataset[:,1]
@@ -75,6 +75,51 @@ dataset = np.hstack((relabels.T,features))
 #print(dataset)
 print("Shape=", np.shape(dataset))
 #print(dataset)
+
+
+
+def GetLeadingSubLeading(inputDataFrame):
+	
+	newDataFrame = a new empty frame to load with photons that pass cuts
+	
+	for each photon in inputDataFrame:	
+		
+		check the event ID 
+			if the event ID is new, save the new ID, start a counter
+			
+			if the event ID is the same as the last one, increment a counter
+			
+			if the counter ==1 and pT > 70 save the photon
+			
+			if the counter ==2 and pT > 40 save the photon
+			
+			if the counter > 2 do not save the photon				 
+	
+	return newDataFrame
+
+
+
+def ApplyPreselection(inputDataFrame):
+
+	newDataFrame = a new empty frame to load with photons that pass cuts
+	
+	for each photon in inputDataFrame:
+	
+		compute the pt based isolation requirements
+		check each criteria from preselection
+		if the photon passes all criteria save the photon on newDataFrame
+
+	return newDataFrame
+
+
+
+
+listOfPhotonPt #the pt column of full matrix
+inputDataFrame # the numpy full matrix
+inputDataFrame = inputDataFrame[ listOfPhotonPt >= 40 ]
+
+
+
 
 #enough pre-processing now, could improve with even sampling and shuffling, maybe even limit photon contribution per event
 
@@ -142,3 +187,5 @@ def labelSamplingFunction(inputDataFrame, inputLabelSet):
 #print(test)
 
 #print(photondataset)
+
+
